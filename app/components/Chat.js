@@ -8,12 +8,19 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
-  //  intro message 
+  // Send an introductory message when the component mounts
   useEffect(() => {
     const sendIntroductoryMessage = async () => {
-      const introMessage = 'Hello! My name is Jimmy. How can I assist you today?';
+      const introMessage = 'Hello! How can I assist you today?';
 
-      const botMessage = { text: introMessage, user: false };
+      const response = await fetch('/api/faq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: introMessage, isIntro: true }),
+      });
+
+      const data = await response.json();
+      const botMessage = { text: data.answer, user: false };
       setMessages([botMessage]);
     };
 
