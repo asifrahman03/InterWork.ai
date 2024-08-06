@@ -1,0 +1,83 @@
+{
+  
+  "name": "customer-support-ai",
+  
+  "version": "0.1.0",
+  
+  "private": true,
+  
+  "scripts": {
+  
+    
+  "dev": "next dev",
+  
+    
+  "build": "next build",
+  
+    
+  "start": "next start",
+  
+    
+  "lint": "next lint"
+  
+  },
+  
+  "dependencies": {
+  
+    
+  "@emotion/react": "^11.13.0",
+  
+    
+  "@emotion/styled": "^11.13.0",
+  
+    
+  "@mui/material": "^5.16.6",
+  
+    
+  "@shadcn/ui": "^0.0.4",
+  
+    
+  "firebase": "^10.12.5",
+  
+    
+  "groq": "^3.53.0",
+  
+    
+  "groq-sdk": "^0.5.0",
+  
+    
+  "next": "14.2.5",
+  
+    
+  "openai": "^4.54.0",
+  
+    
+  "react": "^18",
+  
+    
+  "react-dom": "^18",
+  
+    
+  "shadcn": "^1.0.0"
+  
+  },
+  
+  "devDependencies": {
+  
+    
+  "autoprefixer": "^10.4.20",
+  
+    
+  "eslint": "^8",
+  
+    
+  "eslint-config-next": "14.2.5",
+  
+    
+  "postcss": "^8.4.41",
+  
+    
+  "tailwindcss": "^3.4.7"
+  
+  }
+}
