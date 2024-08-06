@@ -7,7 +7,7 @@ export async function POST(request) {
   const { question } = await request.json();
 
   try {
-    const chatCompletion = await getGroqChatCompletion(question);
+    const chatCompletion = await getGroqChatCompletion(`My name is [Your Name]. ${question}`);
 
     // Format the response to include bullet points and bold text
     let rawAnswer = chatCompletion.choices[0]?.message?.content || 'Sorry, I could not process your question at this time.';

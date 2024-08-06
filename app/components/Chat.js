@@ -1,12 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 const Chat = () => {
   const { darkMode } = useTheme();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+
+  //  intro message 
+  useEffect(() => {
+    const sendIntroductoryMessage = async () => {
+      const introMessage = 'Hello! My name is Jimmy. How can I assist you today?';
+
+      const botMessage = { text: introMessage, user: false };
+      setMessages([botMessage]);
+    };
+
+    sendIntroductoryMessage();
+  }, []);
 
   const sendMessage = async () => {
     if (input.trim() === '') return;
