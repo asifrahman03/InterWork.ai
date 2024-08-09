@@ -2,13 +2,22 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import Fuse from 'fuse.js';
+
+// Define your hard-coded responses
+const hardCodedResponses = {
+  'hello': 'Hello! I am Jinny, your AI assistant. How can I assist you today?',
+  'what can you do?': 'I can assist you with your questions and provide information.',
+  'hi': 'Hello! How can I help you today?',
+  'how are you': 'I am just a program, but I am here to help you!',
+  'whats your name': 'My name is Jinny. How can I assist you today?'
+};
 
 const Chat = () => {
   const { darkMode } = useTheme();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
-  // Send an introductory message when the component mounts
   useEffect(() => {
     const sendIntroductoryMessage = async () => {
       const introMessage = 'Hello! How can I assist you today?';
@@ -27,23 +36,40 @@ const Chat = () => {
     sendIntroductoryMessage();
   }, []);
 
+  // Initialize Fuse.js with hard-coded responses
+  const fuse = new Fuse(Object.keys(hardCodedResponses), {
+    includeScore: true,
+    threshold: 0.4, // Adjust threshold for fuzziness
+  });
+
   const sendMessage = async () => {
     if (input.trim() === '') return;
 
     const userMessage = { text: input, user: true };
     setMessages([...messages, userMessage]);
 
-    // API call to get bot response
-    const response = await fetch('/api/faq', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: input }),
-    });
+    // Fuzzy match input to hard-coded responses
+    const result = fuse.search(input.toLowerCase());
+    const matchedKey = result.length > 0 ? result[0].item : null;
+    const hardCodedResponse = hardCodedResponses[matchedKey];
 
-    const data = await response.json();
-    const botMessage = { text: data.answer, user: false };
+    if (hardCodedResponse) {
+      // Use hard-coded response
+      const botMessage = { text: hardCodedResponse, user: false };
+      setMessages(prevMessages => [...prevMessages, botMessage]);
+    } else {
+      // Fallback to API call
+      const response = await fetch('/api/faq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: input }),
+      });
 
-    setMessages(prevMessages => [...prevMessages, botMessage]);
+      const data = await response.json();
+      const botMessage = { text: data.answer, user: false };
+      setMessages(prevMessages => [...prevMessages, botMessage]);
+    }
+
     setInput('');
   };
 
