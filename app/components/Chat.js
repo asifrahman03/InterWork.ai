@@ -1,10 +1,12 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import Fuse from 'fuse.js';
+import axios from 'axios';
 
-// Define your hard-coded responses
+// Define your hard-coded responses in English
 const hardCodedResponses = {
   'hello': 'Hello! I am Jinny, your AI assistant. How can I assist you today?',
   'what can you do?': 'I can assist you with your questions and provide information.',
@@ -17,29 +19,27 @@ const Chat = () => {
   const { darkMode } = useTheme();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [userLang, setUserLang] = useState('fr'); // Default to French for example
 
   useEffect(() => {
     const sendIntroductoryMessage = async () => {
       const introMessage = 'Hello! How can I assist you today?';
+      
+      // Translate introductory message
+      const translatedIntroMessage = await translateText(introMessage, userLang);
+      
+      const response = await axios.post('/api/faq', { question: translatedIntroMessage, isIntro: true });
 
-      const response = await fetch('/api/faq', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: introMessage, isIntro: true }),
-      });
-
-      const data = await response.json();
-      const botMessage = { text: data.answer, user: false };
+      const botMessage = { text: await translateText(response.data.answer, userLang), user: false };
       setMessages([botMessage]);
     };
 
     sendIntroductoryMessage();
-  }, []);
+  }, [userLang]);
 
-  // Initialize Fuse.js with hard-coded responses
   const fuse = new Fuse(Object.keys(hardCodedResponses), {
     includeScore: true,
-    threshold: 0.4, // Adjust threshold for fuzziness
+    threshold: 0.4,
   });
 
   const sendMessage = async () => {
@@ -48,29 +48,38 @@ const Chat = () => {
     const userMessage = { text: input, user: true };
     setMessages([...messages, userMessage]);
 
+    // Detect language of user input (for simplicity, set userLang manually)
+    setUserLang('fr'); // Set to French for example
+
     // Fuzzy match input to hard-coded responses
     const result = fuse.search(input.toLowerCase());
     const matchedKey = result.length > 0 ? result[0].item : null;
     const hardCodedResponse = hardCodedResponses[matchedKey];
 
+    let botMessage;
     if (hardCodedResponse) {
-      // Use hard-coded response
-      const botMessage = { text: hardCodedResponse, user: false };
-      setMessages(prevMessages => [...prevMessages, botMessage]);
+      // Translate hard-coded response
+      const translatedResponse = await translateText(hardCodedResponse, userLang);
+      botMessage = { text: translatedResponse, user: false };
     } else {
-      // Fallback to API call
-      const response = await fetch('/api/faq', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: input }),
-      });
-
-      const data = await response.json();
-      const botMessage = { text: data.answer, user: false };
-      setMessages(prevMessages => [...prevMessages, botMessage]);
+      // Fallback to API call and translate
+      const response = await axios.post('/api/faq', { question: input });
+      botMessage = { text: await translateText(response.data.answer, userLang), user: false };
     }
 
+    setMessages(prevMessages => [...prevMessages, botMessage]);
     setInput('');
+  };
+
+  // Function to translate text
+  const translateText = async (text, targetLang) => {
+    try {
+      const response = await axios.post('/api/translate', { text: text, targetLang: targetLang });
+      return response.data.translated_text;
+    } catch (error) {
+      console.error('Translation error:', error);
+      return text; // Return original text if translation fails
+    }
   };
 
   return (
