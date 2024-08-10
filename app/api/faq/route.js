@@ -3,29 +3,51 @@ import Groq from 'groq-sdk';
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// Store conversation history
+// Store conversation
 let conversationHistory = [];
 
 export async function POST(request) {
   const { question, isIntro } = await request.json();
 
   try {
-    // If it's an introductory message, reset conversation history
+    // If introductory message, reset conversation history
     if (isIntro) {
-      conversationHistory = [{ role: 'system', content: 'Hello! How can I assist you today?' }];
+      const introduction = `
+        Hello! I am Jinny, your Interview Bot. 
+        I can help you with sample coding questions, HR questions, and technical managerial questions. 
+        Feel free to ask anything related to these topics, and I'll do my best to assist you. 
+        If you ask something outside these topics, I may not be able to help, but I'll let you know!
+      `;
+      conversationHistory = [{ role: 'system', content: introduction }];
     }
 
-    // Add the user question to the conversation history
+    // Add  user qsn to the convr history
     conversationHistory.push({ role: 'user', content: question });
 
-    // Get the response from Groq
+    // prompt
+    const promptTemplate = `
+      You are an AI interview bot specialized in providing sample coding questions, HR questions, and technical managerial questions.
+      Respond only to these topics. If the question is outside these domains, reply with:
+      "I am sorry, I am not trained on it."
+      
+      Question: "${question}"
+      
+      Response:
+    `;
+
+    // Add the prompt to chat histry
+    conversationHistory.push({ role: 'system', content: promptTemplate });
+
+    // response fromgroq based on the prompt template
     const chatCompletion = await getGroqChatCompletion(conversationHistory);
 
-    // Update the conversation history with the response
+    // Extract  bot's msg 
     const botMessage = chatCompletion.choices[0]?.message?.content || 'Sorry, I could not process your question at this time.';
+
+    // Updat history
     conversationHistory.push({ role: 'assistant', content: botMessage });
 
-    // Format the response
+    // prettify output
     let rawAnswer = formatBoldText(botMessage);
     const formattedAnswer = rawAnswer.split('\n').map(line => `<li>${line}</li>`).join('');
 
@@ -35,7 +57,7 @@ export async function POST(request) {
     return NextResponse.json({ answer: 'Sorry, I could not process your question at this time.' });
   }
 }
-
+//model llama 3.1B
 async function getGroqChatCompletion(conversationHistory) {
   return groq.chat.completions.create({
     messages: conversationHistory,
