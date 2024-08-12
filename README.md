@@ -48,6 +48,9 @@ Ensure you have the following installed on your system:
 
     ```env
     GROQ_API_KEY=your_groq_api_key_here
+    HUGGING_FACE_API_KEY=your_groq_hf_here
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk-publishable_here
+    CLERK_SECRET_KEY=your_clerk-key_here
     ```
 
 4. **Run the development server:**
