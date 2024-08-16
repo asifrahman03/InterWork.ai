@@ -9,7 +9,7 @@ const Sidebar = () => {
 
   return (
     <div 
-      className={`w-64 ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'} h-screen p-4`}
+      className={`w-full sm:w-64 ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'} p-4`}
     >
       <h2 className="text-2xl font-bold mb-4">Interview Guide</h2>
       <p className="text-sm mb-4">
@@ -28,7 +28,6 @@ const Sidebar = () => {
       </section>
 
       <section>
-        {/* <h3 className="text-lg font-semibold mb-2">Quick Links:</h3>  */}
         <ul className="space-y-4">
           {/* Uncomment these links when needed */}
           {/* <li><a href="#" className="hover:underline">Home</a></li> */}

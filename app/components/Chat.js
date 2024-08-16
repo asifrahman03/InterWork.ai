@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -83,15 +82,15 @@ const Chat = () => {
   };
 
   return (
-    <div className={`w-full max-w-4xl ${darkMode ? 'bg-zinc-700' : 'bg-slate-100'} rounded-lg shadow-xl p-6`}>
-      <div className="overflow-y-auto h-[70vh] mb-4 space-y-4">
+    <div className={`w-full max-w-4xl ${darkMode ? 'bg-zinc-700' : 'bg-slate-100'} rounded-lg shadow-xl p-4 sm:p-6`}>
+      <div className="overflow-y-auto h-[50vh] sm:h-[70vh] mb-4 space-y-4">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`flex ${message.user ? 'justify-end' : 'justify-start'}`}
           >
             <div 
-              className={`p-3 rounded-lg max-w-[80%] ${
+              className={`p-2 sm:p-3 rounded-lg max-w-[90%] sm:max-w-[80%] ${
                 message.user ? 'bg-blue-500 text-white' : `${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-200 text-black'}`
               }`}
               dangerouslySetInnerHTML={{ __html: message.text }}
@@ -100,7 +99,7 @@ const Chat = () => {
           </div>
         ))}
       </div>
-      <div className="flex space-x-2">
+      <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
         <input
           type="text"
           value={input}
