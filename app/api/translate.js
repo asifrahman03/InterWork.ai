@@ -8,7 +8,7 @@ async function query(payload) {
     "https://api-inference.huggingface.co/models/facebook/mbart-large-50-many-to-many-mmt",
     {
       headers: {
-        Authorization: `Bearer ${HUGGING_FACE_API_KEY}`,
+        Authorization: `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
         "Content-Type": "application/json",
       },
 
@@ -27,7 +27,7 @@ async function detectLanguage(text) {
       "https://api-inference.huggingface.co/models/papluca/xlm-roberta-base-language-detection",
       {
         headers: {
-          Authorization: `Bearer ${HUGGING_FACE_API_KEYt}`,
+          Authorization: `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
           "Content-Type": "application/json",
         },
         method: "POST",

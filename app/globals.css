@@ -1,14 +1,69 @@
+/* styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-gray-900 text-white;
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
 }
-/* styles/globals.css */
-html {
+
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure header background matches theme */
+header {
   transition: background-color 0.3s ease;
 }
-.dark {
-  background-color: #1f2937; /* Dark background color */
+
+/* Mobile-specific adjustments */
+@media (max-width: 640px) {
+  .flex {
+    flex-direction: column;
+  }
+
+  .text-4xl {
+    font-size: 2rem;
+  }
+
+  .text-lg {
+    font-size: 1rem;
+  }
+
+  .p-4 {
+    padding: 1rem;
+  }
+
+  .mb-8 {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Ensure content doesn't overflow on small screens */
+.flex-grow {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Improve readability on small screens */
+.text-center {
+  max-width: 100%;
+  padding: 0 1rem;
 }
